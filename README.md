@@ -18,19 +18,28 @@ Any health issues related to alcoholic habits must be treated by specialized pro
 
 ## How to Install
 
-While Bangle.js applications may commonly be installed through the [Bangle.js App Loader](https://banglejs.com/apps/), **Threshold** is not yet available there. It needs to be manually installed via the [Espruino Web IDE](https://www.espruino.com/ide/) by following these steps:
+### Option 1: Via App Loader (Recommended)
 
-1. Follow [this tutorial section](https://www.espruino.com/Bangle.js+Development#bangle-js-2) to configure Bluetooth on your device.
-2. Follow [this part](https://www.espruino.com/Bangle.js+Development#then-) to connect the device to the IDE through [Bluetooth LE](https://en.wikipedia.org/wiki/Bluetooth_Low_Energy).
-3. At the vertical bar between the dark and light areas of the IDE, click the "Access files in device's storage" icon. A "device storage" dialog will open with a list of all the device's files and an "Upload files" area on top.
-4. Upload `threshold.app.js`, `threshold.settings.js` and `threshold.img`.
-5. At the dark area on the left of the IDE, run the following code:
+Threshold is being integrated into the [Bangle.js App Loader](https://banglejs.com/apps/). In the meantime, it can be installed via the developer's fork:
+
+1. Visit the [developer's App Loader](https://hebinzin.github.io/BangleApps/)
+2. Connect your Bangle.js 2 via Web Bluetooth
+3. Search for "Threshold" and click Upload
+
+### Option 2: Manual Installation (Espruino Web IDE)
+
+For development or if the App Loader isn't available:
+
+1. Open the [Espruino Web IDE](https://www.espruino.com/ide/) and [connect via Bluetooth](https://www.espruino.com/Bangle.js+Development#bangle-js-2).
+2. Click the Storage icon (folder with chip) in the center divider.
+3. Upload `threshold.app.js`, `threshold.settings.js`, and `threshold.img`.
+4. In the left console, run:
 ```javascript
-require("Storage").write("threshold.info",{"id":"threshold","name":"Threshold","type":"app","src":"threshold.app.js","icon":"threshold.img","version":"0.0.1","tags":"tool,clock","files":"threshold.info,threshold.app.js,threshold.settings.js","data":"threshold.json",});
+require("Storage").write("threshold.info",{"id":"threshold","name":"Threshold","type":"app","src":"threshold.app.js","icon":"threshold.img","version":"0.10","tags":"tool,health","files":"threshold.info,threshold.app.js,threshold.settings.js","data":"threshold.json"});
 ```
-6. Press and hold the Bangle.js 2 button for a few seconds to reset the device.
+5. Long-press the Bangle.js 2 button to reset the device.
 
-The application can now be accessed from the launcher.
+The application will now appear in the launcher.
 
 
 ## How to Use

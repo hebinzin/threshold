@@ -1,0 +1,78 @@
+# Sync Threshold app to BangleApps fork
+#
+# This workflow copies app files to your BangleApps fork when you push changes.
+# It creates the proper folder structure expected by the Bangle.js App Loader.
+#
+# Setup required:
+# 1. Create a Personal Access Token (PAT) at https://github.com/settings/tokens
+#    - Select "repo" and "workflow" scopes
+# 2. Add the token as a secret named APPLOADER_PAT in this repo's settings
+#    - Go to Settings → Secrets and variables → Actions → New repository secret
+
+name: Sync to BangleApps
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  APP_ID: threshold
+  APPLOADER_REPO: hebinzin/BangleApps
+  APPLOADER_BRANCH: master
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source app
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Checkout BangleApps fork
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.APPLOADER_REPO }}
+          ref: ${{ env.APPLOADER_BRANCH }}
+          token: ${{ secrets.APPLOADER_PAT }}
+          path: BangleApps
+
+      - name: Sync app files
+        run: |
+          mkdir -p BangleApps/apps/${{ env.APP_ID }}
+          
+          # Copy metadata and documentation
+          cp source/metadata.json BangleApps/apps/${{ env.APP_ID }}/
+          [ -f source/README.md ] && cp source/README.md BangleApps/apps/${{ env.APP_ID }}/
+          [ -f source/ChangeLog ] && cp source/ChangeLog BangleApps/apps/${{ env.APP_ID }}/
+          
+          # Copy app code
+          cp source/*.app.js BangleApps/apps/${{ env.APP_ID }}/ 2>/dev/null || true
+          cp source/*.settings.js BangleApps/apps/${{ env.APP_ID }}/ 2>/dev/null || true
+          
+          # Copy icons
+          [ -f source/app.png ] && cp source/app.png BangleApps/apps/${{ env.APP_ID }}/
+          [ -f source/app-icon.js ] && cp source/app-icon.js BangleApps/apps/${{ env.APP_ID }}/
+          
+          # Copy screenshots
+          [ -d source/screenshots ] && cp -r source/screenshots BangleApps/apps/${{ env.APP_ID }}/
+          
+          echo "Synced files:"
+          ls -la BangleApps/apps/${{ env.APP_ID }}/
+
+      - name: Commit and push
+        run: |
+          cd BangleApps
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "GitHub Action"
+            git config user.email "action@github.com"
+            git add apps/${{ env.APP_ID }}
+            VERSION=$(grep -o '"version":\s*"[^"]*"' apps/${{ env.APP_ID }}/metadata.json | cut -d'"' -f4)
+            git commit -m "Sync ${{ env.APP_ID }} v${VERSION} from source repo"
+            git push
+            echo "✅ Synced ${{ env.APP_ID }} v${VERSION} to BangleApps fork"
+          else
+            echo "ℹ️ No changes to sync"
+          fi
