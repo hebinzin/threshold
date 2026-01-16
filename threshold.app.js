@@ -1,0 +1,233 @@
+const S = require("Storage");
+const X = g.getWidth();
+const Y = g.getHeight();
+
+function save(object, key, value, file)
+// Save an object's value to a file
+{
+  object[key] = value;
+  S.writeJSON(file, object);
+}
+
+function drawUI()
+// Display the user interface, accounting for variables
+{
+  g.clear(reset);
+
+  // Display clock first, then set it's refresh rate
+  drawClock();
+  let clockRefresh = setInterval(drawClock, 60000);
+
+  // Read data from json file
+  let data = Object.assign({
+    bio: 1,
+    height: 1.68,
+    weight: 68,
+    counter: 0,
+    volume: 150,
+    ratio: 4.5,
+  }, S.readJSON('threshold.json', true) || {});
+
+  // Display counter
+  g.setFontAlign(0, 0).setFont("6x8", 3);
+  g.drawString(data.counter, X * 0.28, Y * 0.72, true);
+
+  // Set a regular check for the counter timeout
+  let counterRefresh = setInterval(clearCounter, 60000);
+
+  let bac = calcBAC(
+    calcABV(data.volume, data.ratio),
+    data.counter,
+    calcTBV(data.bio, data.height, data.weight)
+  );
+
+  drawEnd(inferEnd(bac, data.bio));
+
+  waitPrompt(eval(bac), clockRefresh, counterRefresh);
+
+  g.setFontAlign(0, 0).setFont("6x8", 3);
+  g.drawString(bac.toFixed(2).substring(1), X * 0.72, Y * 0.72, true);
+  g.drawString(' %', X * 0.72, Y * 0.86, true);
+
+  let glass = [
+    X * 0.09, Y * 0.59,
+    X * 0.16, Y * 0.93,
+    X * 0.36, Y * 0.93,
+    X * 0.43, Y * 0.59
+  ];
+  g.drawPoly(glass);
+
+  Bangle.loadWidgets();
+  Bangle.drawWidgets();
+}
+
+function drawClock()
+// Draw current time
+{
+  g.reset();
+  let time = require('locale').time(new Date(), 1);
+  g.setFontAlign(0, 0).setFont("6x8", 4);
+  g.drawString(time, X * 0.5, Y * 0.3, true);
+}
+
+function clearCounter()
+// Clears the counter at the time specified in scope
+{
+  let scope = Object.assign({
+    counter: 0,
+    cooldown: Date.now()
+  }, S.readJSON('threshold.json', true) || {});
+
+  let localCounter = scope.counter;
+
+  if (Date.now() > scope.cooldown) {
+    localCounter = 0;
+    save(scope, 'counter', localCounter, 'threshold.json');
+    drawUI();
+  }
+}
+
+function calcABV(volume, ratio)
+// Estimates the alcohol mass by volume in a beverage
+{
+  return ((volume * ratio) / 100) * 0.79;
+}
+
+function calcTBV(isMale, h, w)
+// Estimates the user's Total Blood Volume (based on Nadler's Formula)
+{
+  if (isMale)
+    return 0.37 * (h * h * h) + 0.032 * w + 0.6;
+  else
+    return 0.36 * (h * h * h) + 0.033 * w + 0.18;
+}
+
+function calcBAC(abv, drinks, tbv)
+// Returns the user "Blood Alcohol Content" (based on Widmark Formula)
+{
+  return (abv * drinks) / (tbv * 100);
+}
+
+function inferEnd(bac, isMale)
+// Anticipates the alcohol metabolization time
+{
+  let scope = Object.assign({
+    cooldown: Date.now(),
+    lastDrink: Date.now()
+  }, S.readJSON('threshold.json', true) || {});
+
+  let rate = isMale ? 0.015 : 0.017;
+  let endTime = (3600000 * (bac / rate)) + scope.lastDrink;
+  save(scope, 'cooldown', endTime, 'threshold.json');
+  return endTime;
+}
+
+function drawEnd(timestamp)
+// Display the approximate time by when the user's BAC will be processed
+{
+  g.reset();
+  if (timestamp > Date.now()) {
+    let ClearOutTime = require('locale').time(new Date(timestamp), 1);
+    g.setFontAlign(0, 0).setFont("6x8", 2);
+    g.drawString(ClearOutTime, X * 0.5, Y * 0.48, true);
+  }
+}
+
+function eval(bac)
+// Evaluates the situation to adjust the HUD accordingly
+{
+  let conclusion;
+  if (bac > 0.159) {
+    g.setColor(1, 0, 0);
+    conclusion = 'You shouldn\'t go on. Count another?';
+  } else if (bac > 0.079) {
+    g.setColor(1, 1, 0);
+    conclusion = 'Be careful! Count another glass?';
+  } else if (bac > 0.039) {
+    g.setColor(0, 1, 0);
+    conclusion = 'Count one more drink?';
+  } else {
+    conclusion = 'Count up a drink?';
+    g.reset();
+  }
+  return conclusion;
+}
+
+function waitPrompt(text, id1, id2)
+// Prompt to add a drink to the counter
+{
+  let prompt = false;
+  Bangle.on('swipe', (directionLR, directionUD) => {
+    if (
+      directionUD === -1 &&
+      !Bangle.isLocked() &&
+      !prompt
+    ) {
+      clearInterval(id1);
+      clearInterval(id2);
+      prompt = true;
+      let scope = Object.assign({
+        counter: 0,
+        lastDrink: Date.now()
+      }, S.readJSON('threshold.json', true) || {});
+      localCounter = scope.counter;
+      E.showPrompt(text, {
+        title: 'Threshold',
+        buttons: {
+          'Yes': 1,
+          'No': 0,
+          '..': -1
+        },
+        remove: () => {
+          drawUI();
+        }
+      }).then((v) => {
+        if (v > 0) {
+          localCounter++;
+          save(scope, 'counter', localCounter, 'threshold.json');
+          save(scope, 'lastDrink', Date.now(), 'threshold.json');
+          drawUI();
+        } else if (v < 0) {
+          bevMenu();
+        } else {
+          drawUI();
+        }
+      });
+    }
+  });
+}
+
+function bevMenu()
+// Set and display menu to configure beverage attributes
+{
+  let beverage = Object.assign({
+    volume: 150,
+    ratio: 4.5
+  }, S.readJSON('threshold.json', true) || {});
+
+  let bevAttributes = {
+    '': {
+      'title': 'Beverage'
+    },
+    '< Back': () => {
+      drawUI();
+    },
+    'Volume (ml)': {
+      value: beverage.volume,
+      min: 10,
+      max: 1000,
+      setp: 1,
+      onchange: v => save(beverage, 'volume', v, 'threshold.json')
+    },
+    'Alcohol (%)': {
+      value: beverage.ratio,
+      min: 0.5,
+      max: 70.0,
+      step: 0.5,
+      onchange: r => save(beverage, 'ratio', r, 'threshold.json')
+    },
+  };
+  E.showMenu(bevAttributes);
+}
+
+drawUI();

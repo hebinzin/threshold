@@ -1,0 +1,21 @@
+{
+  "id": "threshold",
+  "name": "Threshold",
+  "shortName": "BAC",
+  "version": "0.10",
+  "description": "Track alcohol consumption and estimate Blood Alcohol Content (BAC). Count drinks, configure beverage volume and alcohol percentage, and see when you'll be sober again.",
+  "icon": "app.png",
+  "type": "app",
+  "tags": "tool,health",
+  "supports": ["BANGLEJS2"],
+  "author": "hebinzin",
+  "readme": "README.md",
+  "storage": [
+    {"name": "threshold.app.js", "url": "threshold.app.js"},
+    {"name": "threshold.settings.js", "url": "threshold.settings.js"},
+    {"name": "threshold.img", "url": "app-icon.js", "evaluate": true}
+  ],
+  "data": [
+    {"name": "threshold.json"}
+  ]
+}
