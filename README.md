@@ -147,29 +147,9 @@ Threshold uses a minimalist user interface, relying on the device's [built-in fo
 The codebase follows [Espruino's performance guidelines](https://www.espruino.com/Performance) and [code style recommendations](https://www.espruino.com/Code+Style) to ensure efficient use of the Bangle.js 2's limited resources.
 
 
-## To-do
+## Roadmap
 
-As of now, Threshold is already capable of doing what it claims, but of course, it can still be improved in many ways. Apart from bug corrections, these are some considered changes that may enhance its functionality and/or performance:
-
-### Features
-- [ ] Decrease BAC dynamically as time goes on (currently stays static until counter resets).
-- [ ] Let users choose between unit systems (metric or imperial) for height, weight, and volume.
-- [ ] Add beverage presets (beer, wine, spirits) with common volume/alcohol values.
-- [ ] Store drink history/sessions for later review.
-- [ ] Add a "quick add" option to repeat the last drink without going through the menu.
-
-### User Experience
-- [ ] Add a visual cue on the main screen showing how to access the prompt (swipe up hint).
-- [ ] Improve UI readability by making better use of screen space.
-- [ ] Provide a way to access app settings directly from the beverage menu.
-- [ ] Add haptic feedback when BAC reaches warning thresholds.
-
-### Technical
-- [ ] Store BAC value in `threshold.json` instead of recalculating on each UI draw.
-- [ ] Optimize code following [Espruino performance guidelines](https://www.espruino.com/Performance).
-- [ ] Create/update app icon as 48×48 PNG for App Loader compatibility.
-- [ ] Add screenshots to the repository for App Loader listing.
-- [ ] Submit to the official Bangle.js App Loader.
+For planned features, bug fixes, and version milestones, see [ROADMAP.md](ROADMAP.md).
 
 
 ## Origin & Inspiration
