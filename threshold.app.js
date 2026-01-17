@@ -11,6 +11,20 @@ const ZONE_MID_START = 0.18;   // Middle zone: 18% to 82%
 const ZONE_MID_END = 0.82;
 const ZONE_BOT_START = 0.82;   // Bottom strip: 82% to 100%
 
+function getBACStatus(bac, counter) {
+  // Returns color and message based on BAC level and session state
+  // No session started - neutral/white
+  if (counter === 0) return { color: null, msg: 'Count up a drink?' };
+  
+  // Active session with thresholds
+  if (bac >= 0.16) return { color: "#f00", msg: "You shouldn't go on. Count another?" };
+  if (bac >= 0.08) return { color: "#f80", msg: "Be careful! Count another glass?" };
+  if (bac >= 0.04) return { color: "#ff0", msg: "Count one more drink?" };
+  
+  // Low BAC but session active
+  return { color: "#0f0", msg: "Count up a drink?" };
+}
+
 function save(object, key, value, file)
 // Save an object's value to a file
 {
@@ -41,15 +55,6 @@ function drawUI()
     ratio: 4.5,
   }, S.readJSON('threshold.json', true) || {});
 
-  // Display counter
-  g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(data.counter, X * 0.28, Y * 0.72, true);
-
-  // Display current beverage settings below counter (two lines)
-  g.setFont("6x8", 1);
-  g.drawString(data.volume + "ml", X * 0.28, Y * 0.82, true);
-  g.drawString(data.ratio + "%", X * 0.28, Y * 0.90, true);
-
   // Set a regular check for the counter timeout
   counterInterval = setInterval(clearCounter, 60000);
 
@@ -59,21 +64,32 @@ function drawUI()
     calcTBV(data.bio, data.height, data.weight)
   );
 
+  // Get BAC status (color + message)
+  let status = getBACStatus(bac, data.counter);
+
+  // Draw colored background for middle zone (only if session active)
+  if (status.color) {
+    g.setColor(status.color);
+    g.fillRect(0, Y * ZONE_MID_START, X, Y * ZONE_MID_END);
+    g.setColor("#000"); // Black text on colored background
+  }
+
   drawEnd(inferEnd(bac, data.bio));
 
-  waitPrompt(warn(bac));
+  waitPrompt(status.msg);
 
+  // Draw counter on left side of middle zone
   g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(bac.toFixed(2).substring(1), X * 0.72, Y * 0.72, true);
-  g.drawString(' %', X * 0.72, Y * 0.86, true);
+  g.drawString(data.counter, X * 0.28, Y * 0.50, true);
 
-  let glass = [
-    X * 0.09, Y * 0.59,
-    X * 0.16, Y * 0.93,
-    X * 0.36, Y * 0.93,
-    X * 0.43, Y * 0.59
-  ];
-  g.drawPoly(glass);
+  // Draw BAC on right side of middle zone
+  g.drawString(bac.toFixed(2).substring(1), X * 0.72, Y * 0.45, true);
+  g.drawString('%', X * 0.72, Y * 0.60, true);
+
+  // Draw beverage info below counter
+  g.setFont("6x8", 1);
+  g.drawString(data.volume + "ml", X * 0.28, Y * 0.65, true);
+  g.drawString(data.ratio + "%", X * 0.28, Y * 0.73, true);
 
   // Swipe-up hint chevron at bottom center
   g.setFontAlign(0, 1).setFont("6x8", 2);
@@ -154,26 +170,6 @@ function drawEnd(timestamp)
     g.setFontAlign(0, 0).setFont("6x8", 2);
     g.drawString(ClearOutTime, X * 0.5, Y * 0.48, true);
   }
-}
-
-function warn(bac)
-// Sets warning color and returns prompt text based on BAC level
-{
-  let msg;
-  if (bac > 0.159) {
-    g.setColor(1, 0, 0);
-    msg = 'You shouldn\'t go on. Count another?';
-  } else if (bac > 0.079) {
-    g.setColor(1, 1, 0);
-    msg = 'Be careful! Count another glass?';
-  } else if (bac > 0.039) {
-    g.setColor(0, 1, 0);
-    msg = 'Count one more drink?';
-  } else {
-    msg = 'Count up a drink?';
-    g.reset();
-  }
-  return msg;
 }
 
 function waitPrompt(text)
