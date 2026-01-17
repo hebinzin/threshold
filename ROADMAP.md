@@ -8,7 +8,7 @@ This document tracks planned work for Threshold. Tasks are organized by version 
 
 Focus: Let users fix mistakes and receive better feedback.
 
-- [ ] **Add "−1" subtract option** — Allow removing a drink if added by mistake.
+- [x] **Add "More" submenu** — Replace "Set" button with "More" menu containing: Undo last drink, Beverage settings, Reset counter.
 - [ ] **Haptic feedback at thresholds** — Vibrate when BAC crosses warning levels (0.04, 0.08, 0.16).
 
 ---
@@ -18,7 +18,7 @@ Focus: Let users fix mistakes and receive better feedback.
 Focus: Make common actions faster.
 
 - [ ] **Beverage presets** — Quick-select Beer/Wine/Spirit with preset volume/alcohol values.
-- [ ] **Quick-add gesture** — Double-tap or swipe to repeat last drink without prompt.
+- [ ] **Gesture shortcuts** — Add gesture (double-tap, swipe, or long-press) for quick actions with confirmation prompts.
 
 ---
 

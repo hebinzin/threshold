@@ -194,7 +194,7 @@ function waitPrompt(text)
         buttons: {
           'Yes': 1,
           'No': 0,
-          'Set': -1
+          'More': -1
         }
       }).then((v) => {
         if (v > 0) {
@@ -204,13 +204,47 @@ function waitPrompt(text)
           S.writeJSON('threshold.json', scope);
           drawUI();
         } else if (v < 0) {
-          bevMenu();
+          moreMenu();
         } else {
           drawUI();
         }
       });
     }
   });
+}
+
+function moreMenu()
+// Display menu with additional options
+{
+  let data = S.readJSON('threshold.json', true) || {};
+
+  let menuItems = {
+    '': { 'title': 'Options' },
+    '< Back': () => drawUI()
+  };
+
+  // Only show Undo if there are drinks to undo
+  if (data.counter > 0) {
+    menuItems['- Undo last'] = () => {
+      data.counter--;
+      S.writeJSON('threshold.json', data);
+      drawUI();
+    };
+  }
+
+  menuItems['Beverage'] = () => bevMenu();
+
+  menuItems['Reset counter'] = () => {
+    E.showPrompt('Reset drink\ncounter to 0?').then((v) => {
+      if (v) {
+        data.counter = 0;
+        S.writeJSON('threshold.json', data);
+      }
+      drawUI();
+    });
+  };
+
+  E.showMenu(menuItems);
 }
 
 function bevMenu()
