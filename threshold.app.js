@@ -2,6 +2,9 @@ const S = require("Storage");
 const X = g.getWidth();
 const Y = g.getHeight();
 
+// Global interval IDs to prevent accumulation
+let clockInterval, counterInterval;
+
 function save(object, key, value, file)
 // Save an object's value to a file
 {
@@ -14,9 +17,13 @@ function drawUI()
 {
   g.clear();
 
-  // Display clock first, then set it's refresh rate
+  // Clear any existing intervals to prevent accumulation
+  if (clockInterval) clearInterval(clockInterval);
+  if (counterInterval) clearInterval(counterInterval);
+
+  // Display clock first, then set its refresh rate
   drawClock();
-  let clockRefresh = setInterval(drawClock, 60000);
+  clockInterval = setInterval(drawClock, 60000);
 
   // Read data from json file
   let data = Object.assign({
@@ -33,7 +40,7 @@ function drawUI()
   g.drawString(data.counter, X * 0.28, Y * 0.72, true);
 
   // Set a regular check for the counter timeout
-  let counterRefresh = setInterval(clearCounter, 60000);
+  counterInterval = setInterval(clearCounter, 60000);
 
   let bac = calcBAC(
     calcABV(data.volume, data.ratio),
@@ -43,7 +50,7 @@ function drawUI()
 
   drawEnd(inferEnd(bac, data.bio));
 
-  waitPrompt(warn(bac), clockRefresh, counterRefresh);
+  waitPrompt(warn(bac));
 
   g.setFontAlign(0, 0).setFont("6x8", 3);
   g.drawString(bac.toFixed(2).substring(1), X * 0.72, Y * 0.72, true);
@@ -153,7 +160,7 @@ function warn(bac)
   return msg;
 }
 
-function waitPrompt(text, id1, id2)
+function waitPrompt(text)
 // Prompt to add a drink to the counter
 {
   let prompt = false;
@@ -164,8 +171,9 @@ function waitPrompt(text, id1, id2)
       !Bangle.isLocked() &&
       !prompt
     ) {
-      clearInterval(id1);
-      clearInterval(id2);
+      // Clear intervals before showing prompt (they'll be recreated in drawUI)
+      if (clockInterval) clearInterval(clockInterval);
+      if (counterInterval) clearInterval(counterInterval);
       prompt = true;
       let scope = Object.assign({
         counter: 0,
