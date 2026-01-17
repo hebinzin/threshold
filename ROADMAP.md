@@ -86,8 +86,9 @@ These are nice-to-have features for consideration after v1.0.
 | Version | Status | Focus |
 |---------|--------|-------|
 | 0.10 | Released | Initial version on developer's fork |
-| 0.11 | In Progress | Bug fixes & stability |
-| 0.12 | Planned | Discoverability |
-| 0.13 | Planned | Error recovery & feedback |
-| 0.14 | Planned | Streamlined flow |
+| 0.11 | Released | Critical fixes & first-run setup |
+| 0.12 | In Progress | Bug fixes & stability |
+| 0.13 | Planned | Discoverability |
+| 0.14 | Planned | Error recovery & feedback |
+| 0.15 | Planned | Streamlined flow |
 | 1.0 | Planned | Official release |
