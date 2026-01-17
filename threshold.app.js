@@ -12,7 +12,7 @@ function save(object, key, value, file)
 function drawUI()
 // Display the user interface, accounting for variables
 {
-  g.clear(reset);
+  g.clear();
 
   // Display clock first, then set it's refresh rate
   drawClock();
