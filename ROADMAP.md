@@ -11,7 +11,7 @@ These issues affect core functionality and must be fixed first.
 - [x] **First-run setup prompt** — App now detects first run and prompts users to configure their measurements.
 - [x] **Rename `eval` function** — Shadows JavaScript's built-in `eval()`. Renamed to `warn()`.
 - [ ] **Fix event handler accumulation** — Every `drawUI()` call adds a new swipe handler without removing the old one. Memory leak and erratic behavior.
-- [ ] **Fix undeclared `localCounter`** — Missing `let` declaration creates implicit global variable.
+- [x] **Fix undeclared `localCounter`** — Added `let` declaration.
 
 ---
 

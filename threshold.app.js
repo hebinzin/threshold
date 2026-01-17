@@ -170,7 +170,7 @@ function waitPrompt(text, id1, id2)
         counter: 0,
         lastDrink: Date.now()
       }, S.readJSON('threshold.json', true) || {});
-      localCounter = scope.counter;
+      let localCounter = scope.counter;
       E.showPrompt(text, {
         title: 'Threshold',
         buttons: {

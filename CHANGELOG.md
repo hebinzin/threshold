@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Beverage menu now displays correctly (removed conflicting `remove` callback)
 - Volume slider now steps by 1ml (`setp` → `step` typo fix)
 - Renamed `eval` function to `warn` to avoid shadowing JavaScript built-in
+- Added `let` to `localCounter` to fix implicit global variable
 
 ### Added
 - First-run setup prompt — app detects missing user data and prompts for configuration
