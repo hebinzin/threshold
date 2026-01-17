@@ -5,6 +5,12 @@ const Y = g.getHeight();
 // Global interval IDs to prevent accumulation
 let clockInterval, counterInterval;
 
+// UI Zone boundaries (Y coordinates as percentages)
+const ZONE_TOP_END = 0.18;      // Time strip: 0 to 18%
+const ZONE_MID_START = 0.18;   // Middle zone: 18% to 82%
+const ZONE_MID_END = 0.82;
+const ZONE_BOT_START = 0.82;   // Bottom strip: 82% to 100%
+
 function save(object, key, value, file)
 // Save an object's value to a file
 {
@@ -75,7 +81,7 @@ function drawUI()
   g.drawString("^", X * 0.5, Y - 2);
   g.reset();
 
-  Bangle.drawWidgets();
+  // Widgets removed for more screen space
 }
 
 function drawClock()
@@ -320,7 +326,7 @@ function showSetup()
 function init()
 // App entry point with first-run detection
 {
-  Bangle.loadWidgets(); // Load widgets once at startup
+  // Widgets removed for more screen space
 
   let data = S.readJSON('threshold.json', true);
 
