@@ -43,7 +43,7 @@ function drawUI()
 
   drawEnd(inferEnd(bac, data.bio));
 
-  waitPrompt(eval(bac), clockRefresh, counterRefresh);
+  waitPrompt(warn(bac), clockRefresh, counterRefresh);
 
   g.setFontAlign(0, 0).setFont("6x8", 3);
   g.drawString(bac.toFixed(2).substring(1), X * 0.72, Y * 0.72, true);
@@ -133,24 +133,24 @@ function drawEnd(timestamp)
   }
 }
 
-function eval(bac)
-// Evaluates the situation to adjust the HUD accordingly
+function warn(bac)
+// Sets warning color and returns prompt text based on BAC level
 {
-  let conclusion;
+  let msg;
   if (bac > 0.159) {
     g.setColor(1, 0, 0);
-    conclusion = 'You shouldn\'t go on. Count another?';
+    msg = 'You shouldn\'t go on. Count another?';
   } else if (bac > 0.079) {
     g.setColor(1, 1, 0);
-    conclusion = 'Be careful! Count another glass?';
+    msg = 'Be careful! Count another glass?';
   } else if (bac > 0.039) {
     g.setColor(0, 1, 0);
-    conclusion = 'Count one more drink?';
+    msg = 'Count one more drink?';
   } else {
-    conclusion = 'Count up a drink?';
+    msg = 'Count up a drink?';
     g.reset();
   }
-  return conclusion;
+  return msg;
 }
 
 function waitPrompt(text, id1, id2)
