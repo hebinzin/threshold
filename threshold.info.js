@@ -8,7 +8,7 @@ require("Storage").write("threshold.info",{
   "type":"app",
   "src":"threshold.app.js",
   "icon":"threshold.img",
-  "version":"0.11.1",
+  "version":"0.11.2",
   "tags":"tool,health",
   "files":"threshold.info,threshold.app.js,threshold.settings.js,threshold.img",
   "data":"threshold.json"

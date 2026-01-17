@@ -7,12 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
----
-
-## [0.11.1] - 2026-01-17
-
 ### Fixed
 - Fixed undefined `reset` variable in `g.clear(reset)` call
+- Combined sequential storage writes into single operation
 
 ---
 

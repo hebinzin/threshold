@@ -22,7 +22,7 @@ Focus: Fix remaining bugs and stabilize the codebase.
 - [x] **Fix beverage menu display** — Removed conflicting `remove` callback that overwrote bevMenu with drawUI.
 - [x] **Fix `setp` typo** — Changed to `step` so volume slider increments by 1ml.
 - [x] **Fix `g.clear(reset)` call** — Changed to `g.clear()`.
-- [ ] **Combine sequential storage writes** — Two consecutive `save()` calls should be one write operation.
+- [x] **Combine sequential storage writes** — Combined into single `S.writeJSON()` call.
 - [ ] **Fix interval accumulation** — Track interval IDs globally and clear before creating new ones.
 - [ ] **Load widgets once** — Move `Bangle.loadWidgets()` to app startup, not every `drawUI()` call.
 

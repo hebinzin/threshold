@@ -182,8 +182,9 @@ function waitPrompt(text, id1, id2)
       }).then((v) => {
         if (v > 0) {
           localCounter++;
-          save(scope, 'counter', localCounter, 'threshold.json');
-          save(scope, 'lastDrink', Date.now(), 'threshold.json');
+          scope.counter = localCounter;
+          scope.lastDrink = Date.now();
+          S.writeJSON('threshold.json', scope);
           drawUI();
         } else if (v < 0) {
           bevMenu();
