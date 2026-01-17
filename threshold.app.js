@@ -64,7 +64,6 @@ function drawUI()
   ];
   g.drawPoly(glass);
 
-  Bangle.loadWidgets();
   Bangle.drawWidgets();
 }
 
@@ -276,6 +275,8 @@ function showSetup()
 function init()
 // App entry point with first-run detection
 {
+  Bangle.loadWidgets(); // Load widgets once at startup
+
   let data = S.readJSON('threshold.json', true);
 
   // Check if essential user measurements exist

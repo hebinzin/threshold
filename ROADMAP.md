@@ -24,7 +24,7 @@ Focus: Fix remaining bugs and stabilize the codebase.
 - [x] **Fix `g.clear(reset)` call** — Changed to `g.clear()`.
 - [x] **Combine sequential storage writes** — Combined into single `S.writeJSON()` call.
 - [x] **Fix interval accumulation** — Track interval IDs globally and clear before creating new ones.
-- [ ] **Load widgets once** — Move `Bangle.loadWidgets()` to app startup, not every `drawUI()` call.
+- [x] **Load widgets once** — Moved `Bangle.loadWidgets()` to `init()`, only `drawWidgets()` in `drawUI()`.
 
 ---
 

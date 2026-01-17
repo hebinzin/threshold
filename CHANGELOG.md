@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed undefined `reset` variable in `g.clear(reset)` call
 - Combined sequential storage writes into single operation
 - Fixed interval accumulation with global tracking and cleanup
+- Moved `loadWidgets()` to init for better performance
 
 ---
 
