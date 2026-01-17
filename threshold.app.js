@@ -167,13 +167,23 @@ function inferEnd(bac, isMale)
 }
 
 function drawEnd(timestamp)
-// Display the approximate time by when the user's BAC will be processed
+// Display the approximate sober time in bottom strip with clock icon
 {
   g.reset();
   if (timestamp > Date.now()) {
-    let ClearOutTime = require('locale').time(new Date(timestamp), 1);
+    let soberTime = require('locale').time(new Date(timestamp), 1);
+    let yPos = Y * (ZONE_BOT_START + 0.07);
+    
+    // Draw small clock icon (circle + hands)
+    let iconX = X * 0.25;
+    let iconR = 6;
+    g.drawCircle(iconX, yPos, iconR);
+    g.drawLine(iconX, yPos, iconX, yPos - 4);      // Hour hand (up)
+    g.drawLine(iconX, yPos, iconX + 3, yPos + 2);  // Minute hand
+    
+    // Draw sober time next to icon
     g.setFontAlign(0, 0).setFont("6x8", 2);
-    g.drawString(ClearOutTime, X * 0.5, Y * 0.48, true);
+    g.drawString(soberTime, X * 0.55, yPos, true);
   }
 }
 
