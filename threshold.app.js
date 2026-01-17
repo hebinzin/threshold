@@ -157,6 +157,7 @@ function waitPrompt(text, id1, id2)
 // Prompt to add a drink to the counter
 {
   let prompt = false;
+  Bangle.removeAllListeners('swipe'); // Remove old handlers to prevent accumulation
   Bangle.on('swipe', (directionLR, directionUD) => {
     if (
       directionUD === -1 &&
