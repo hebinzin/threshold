@@ -85,12 +85,12 @@ function drawUI()
 }
 
 function drawClock()
-// Draw current time
+// Draw current time in top strip
 {
   g.reset();
   let time = require('locale').time(new Date(), 1);
-  g.setFontAlign(0, 0).setFont("6x8", 4);
-  g.drawString(time, X * 0.5, Y * 0.3, true);
+  g.setFontAlign(0, 0).setFont("6x8", 3);
+  g.drawString(time, X * 0.5, Y * (ZONE_TOP_END / 2), true);
 }
 
 function clearCounter()
