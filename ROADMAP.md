@@ -1,40 +1,6 @@
 # Roadmap
 
-This document is the single source of truth for all planned work on Threshold. Tasks are organized by version milestone.
-
----
-
-## Critical — Before Any Release
-
-These issues affect core functionality and must be fixed first.
-
-- [x] **First-run setup prompt** — App now detects first run and prompts users to configure their measurements.
-- [x] **Rename `eval` function** — Shadows JavaScript's built-in `eval()`. Renamed to `warn()`.
-- [x] **Fix event handler accumulation** — Added `removeAllListeners('swipe')` before registering new handler.
-- [x] **Fix undeclared `localCounter`** — Added `let` declaration.
-
----
-
-## v0.11 — Bug Fixes & Stability
-
-Focus: Fix remaining bugs and stabilize the codebase.
-
-- [x] **Fix beverage menu display** — Removed conflicting `remove` callback that overwrote bevMenu with drawUI.
-- [x] **Fix `setp` typo** — Changed to `step` so volume slider increments by 1ml.
-- [x] **Fix `g.clear(reset)` call** — Changed to `g.clear()`.
-- [x] **Combine sequential storage writes** — Combined into single `S.writeJSON()` call.
-- [x] **Fix interval accumulation** — Track interval IDs globally and clear before creating new ones.
-- [x] **Load widgets once** — Moved `Bangle.loadWidgets()` to `init()`, only `drawWidgets()` in `drawUI()`.
-
----
-
-## v0.12 — Discoverability
-
-Focus: Help new users understand how to use the app.
-
-- [x] **Add swipe-up hint** — Added "swipe up" text at bottom of main screen.
-- [x] **Rename ".." button** — Changed to `Set` for clarity.
-- [x] **Show current beverage on main screen** — Display "150ml 4.5%" below drink counter.
+This document tracks planned work for Threshold. Tasks are organized by version milestone. For completed work, see [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -74,10 +40,10 @@ These are nice-to-have features for consideration after v1.0.
 - [ ] **Unit system choice** — Let users choose metric or imperial for height, weight, volume.
 - [ ] **Drink history/sessions** — Store timestamped records of drinks for later review.
 - [ ] **Session model** — Explicit "start/end session" flow with session history.
-- [ ] **In-app settings access** — Access user settings from within the app (not just system Settings).
+- [ ] **In-app settings access** — Access user settings from within the app.
 - [ ] **Optimize storage reads** — Read `threshold.json` once and pass data to functions.
-- [ ] **Define constants** — Use `DATA_FILE` constant instead of repeated `'threshold.json'` strings.
-- [ ] **Define defaults constant** — Single `DEFAULTS` object instead of recreating inline each time.
+- [ ] **Define constants** — Use `DATA_FILE` constant instead of repeated strings.
+- [ ] **Define defaults constant** — Single `DEFAULTS` object instead of recreating inline.
 
 ---
 
@@ -87,8 +53,7 @@ These are nice-to-have features for consideration after v1.0.
 |---------|--------|-------|
 | 0.10 | Released | Initial version on developer's fork |
 | 0.11 | Released | Critical fixes & first-run setup |
-| 0.12 | In Progress | Bug fixes & stability |
-| 0.13 | Planned | Discoverability |
-| 0.14 | Planned | Error recovery & feedback |
-| 0.15 | Planned | Streamlined flow |
+| 0.12 | Released | Bug fixes, stability & discoverability |
+| 0.13 | Next | Error recovery & feedback |
+| 0.14 | Planned | Streamlined flow |
 | 1.0 | Planned | Official release |
