@@ -39,6 +39,10 @@ function drawUI()
   g.setFontAlign(0, 0).setFont("6x8", 3);
   g.drawString(data.counter, X * 0.28, Y * 0.72, true);
 
+  // Display current beverage settings below counter
+  g.setFont("6x8", 1);
+  g.drawString(data.volume + "ml " + data.ratio + "%", X * 0.28, Y * 0.84, true);
+
   // Set a regular check for the counter timeout
   counterInterval = setInterval(clearCounter, 60000);
 
@@ -63,6 +67,12 @@ function drawUI()
     X * 0.43, Y * 0.59
   ];
   g.drawPoly(glass);
+
+  // Swipe-up hint at bottom center
+  g.setFontAlign(0, 1).setFont("6x8", 1);
+  g.setColor("#888");
+  g.drawString("swipe up", X * 0.5, Y - 2);
+  g.reset();
 
   Bangle.drawWidgets();
 }
@@ -184,7 +194,7 @@ function waitPrompt(text)
         buttons: {
           'Yes': 1,
           'No': 0,
-          '..': -1
+          'Set': -1
         }
       }).then((v) => {
         if (v > 0) {

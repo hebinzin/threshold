@@ -32,9 +32,9 @@ Focus: Fix remaining bugs and stabilize the codebase.
 
 Focus: Help new users understand how to use the app.
 
-- [ ] **Add swipe-up hint** — Draw visual indicator (chevron or text) at bottom of main screen.
-- [ ] **Rename ".." button** — Change to `Set`, `Bev`, or gear icon for clarity.
-- [ ] **Show current beverage on main screen** — Display "150ml · 4.5%" below drink counter.
+- [x] **Add swipe-up hint** — Added "swipe up" text at bottom of main screen.
+- [x] **Rename ".." button** — Changed to `Set` for clarity.
+- [x] **Show current beverage on main screen** — Display "150ml 4.5%" below drink counter.
 
 ---
 

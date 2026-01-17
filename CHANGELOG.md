@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.12] - 2026-01-17
+
+### Added
+- Swipe-up hint at bottom of main screen for discoverability
+- Current beverage settings shown below drink counter
+
+### Changed
+- Renamed cryptic ".." button to "Set" for clarity
+
 ### Fixed
 - Fixed undefined `reset` variable in `g.clear(reset)` call
 - Combined sequential storage writes into single operation
