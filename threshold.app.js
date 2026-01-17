@@ -74,6 +74,11 @@ function drawUI()
     g.setColor("#000"); // Black text on colored background
   }
 
+  // Partial vertical divider (center, not full height so color connects)
+  let dividerTop = Y * (ZONE_MID_START + 0.08);
+  let dividerBot = Y * (ZONE_MID_END - 0.08);
+  g.drawLine(X * 0.5, dividerTop, X * 0.5, dividerBot);
+
   drawEnd(inferEnd(bac, data.bio));
 
   waitPrompt(status.msg);
