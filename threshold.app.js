@@ -96,10 +96,10 @@ function drawUI()
   g.drawString(data.volume + "ml", X * 0.28, Y * 0.65, true);
   g.drawString(data.ratio + "%", X * 0.28, Y * 0.73, true);
 
-  // Swipe-up hint chevron at bottom center
-  g.setFontAlign(0, 1).setFont("6x8", 2);
+  // Swipe-up hint chevron at bottom right of bottom strip
+  g.setFontAlign(0, 0).setFont("6x8", 2);
   g.setColor("#888");
-  g.drawString("^", X * 0.5, Y - 2);
+  g.drawString("^", X * 0.85, Y * (ZONE_BOT_START + 0.09));
   g.reset();
 
   // Widgets removed for more screen space
