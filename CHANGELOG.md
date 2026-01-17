@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `eval` function to `warn` to avoid shadowing JavaScript built-in
 
 ### Added
+- First-run setup prompt — app detects missing user data and prompts for configuration
 - `.gitignore` to exclude local development files
+
+### Changed
+- Default placeholder values updated to neutral 1.70m / 70kg (only used as fallback)
 
 ---
 

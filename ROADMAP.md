@@ -8,7 +8,7 @@ This document is the single source of truth for all planned work on Threshold. T
 
 These issues affect core functionality and must be fixed first.
 
-- [ ] **First-run setup prompt** — App silently uses default body measurements (1.68m, 68kg) without prompting new users to configure. Results in inaccurate BAC for everyone who doesn't discover Settings.
+- [x] **First-run setup prompt** — App now detects first run and prompts users to configure their measurements.
 - [x] **Rename `eval` function** — Shadows JavaScript's built-in `eval()`. Renamed to `warn()`.
 - [ ] **Fix event handler accumulation** — Every `drawUI()` call adds a new swipe handler without removing the old one. Memory leak and erratic behavior.
 - [ ] **Fix undeclared `localCounter`** — Missing `let` declaration creates implicit global variable.

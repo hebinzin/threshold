@@ -2,8 +2,8 @@
     const S = require('Storage');
     let settings = Object.assign({
       bio: 1,
-      height: 1.68,
-      weight: 68,
+      height: 1.70,
+      weight: 70,
       counter: 0
     }, S.readJSON('threshold.json', true) || {});
 

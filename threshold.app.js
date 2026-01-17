@@ -21,8 +21,8 @@ function drawUI()
   // Read data from json file
   let data = Object.assign({
     bio: 1,
-    height: 1.68,
-    weight: 68,
+    height: 1.70,
+    weight: 70,
     counter: 0,
     volume: 150,
     ratio: 4.5,
@@ -227,4 +227,62 @@ function bevMenu()
   E.showMenu(bevAttributes);
 }
 
-drawUI();
+function showSetup()
+// First-run setup menu for essential user settings
+{
+  let data = Object.assign({
+    bio: 1,
+    height: 1.70,
+    weight: 70
+  }, S.readJSON('threshold.json', true) || {});
+
+  const BIO = ['Female', 'Male'];
+
+  E.showMenu({
+    '': { 'title': 'Setup' },
+    'Biological sex': {
+      value: data.bio,
+      min: 0, max: 1,
+      format: b => BIO[b],
+      onchange: b => { data.bio = b; }
+    },
+    'Height (m)': {
+      value: data.height,
+      min: 0.55, max: 2.72, step: 0.01,
+      onchange: h => { data.height = h; }
+    },
+    'Weight (kg)': {
+      value: data.weight,
+      min: 2, max: 635, step: 1,
+      onchange: w => { data.weight = w; }
+    },
+    'Save': () => {
+      S.writeJSON('threshold.json', data);
+      drawUI();
+    }
+  });
+}
+
+function init()
+// App entry point with first-run detection
+{
+  let data = S.readJSON('threshold.json', true);
+
+  // Check if essential user measurements exist
+  if (!data || data.bio === undefined || data.height === undefined || data.weight === undefined) {
+    E.showPrompt("Configure your\nmeasurements for\naccurate BAC?", {
+      title: "Welcome!",
+      buttons: { "Setup": true, "Exit": false }
+    }).then((v) => {
+      if (v) {
+        showSetup();
+      } else {
+        load(); // Exit to launcher, will prompt again next time
+      }
+    });
+  } else {
+    drawUI();
+  }
+}
+
+init();
