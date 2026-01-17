@@ -44,9 +44,20 @@ The application will now appear in the launcher.
 
 ## How to Use
 
+### Quick Start
+
+1. **First run:** The app will prompt you to configure your measurements (height, weight, sex).
+2. **Add a drink:** Swipe up from the main screen → tap `Yes`.
+3. **Change drink type:** Swipe up → tap `More` → `Beverage`.
+4. **Undo a drink:** Swipe up → tap `More` → `Undo last`.
+
+That's it! The app will track your drinks and estimate your BAC.
+
+---
+
 ### 1. Setting Up
 
-Threshold is meant to be used during a drinking "session" (e.g., a party or meeting) so users can keep track of how many glasses they drank and estimate their blood alcohol level. The application should first be configured with the user's attributes for more accurate evaluations:
+Threshold is meant to be used during a drinking "session" (e.g., a party or meeting) so users can keep track of how many glasses they drank and estimate their blood alcohol level. On first launch, the app will prompt you to configure your measurements. You can also access settings later:
 
 1. While at the clock screen, press the device button to unlock, then press again to open the launcher.
 2. Go to the `Settings` app, then to the `Apps` submenu.
@@ -71,16 +82,16 @@ At Threshold's main screen, you will see the widgets on top and a few numerals o
 - A number on the bottom left, showing the drink count.
 - A percentage on the bottom right, depicting the user's Blood Alcohol Content.
 
-With the device unlocked, the user can swipe up from the bottom of the screen to launch a prompt with three options:
+With the device unlocked, the user can swipe up (indicated by a `^` at the bottom) to launch a prompt with three options:
 
 1. `Yes` — add a "glass" to the drink counter.
 2. `No` — go back to the previous screen.
-3. `..` — open the "beverage menu" to configure drink attributes.
+3. `More` — open a menu with additional options (Undo, Beverage settings, Reset counter).
 
 
 ### 3. Use Case
 
-Say a user is drinking wine at dinner — 120 ml per glass, 12.5% alcohol by volume. They can enter the beverage menu (by selecting `..` at the prompt) and set `Volume (ml)` and `Alcohol (%)` accordingly. Then, they add a drink to the counter by selecting `Yes`. It's best to do this just after finishing each glass.
+Say a user is drinking wine at dinner — 120 ml per glass, 12.5% alcohol by volume. They can enter the beverage menu (by selecting `More` → `Beverage` at the prompt) and set `Volume (ml)` and `Alcohol (%)` accordingly. Then, they add a drink to the counter by selecting `Yes`. It's best to do this just after finishing each glass.
 
 After that, a smaller clock will appear at the center of the screen, showing an estimate of when the alcohol will be fully metabolized. If another drink is added before that time, the estimate will extend. When the time is finally reached, the counter resets to zero.
 

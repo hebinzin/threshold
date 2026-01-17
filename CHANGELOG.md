@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - "More" submenu with Undo, Beverage settings, and Reset counter options
 
+### Changed
+- Replaced "swipe up" text with cleaner `^` chevron
+- Split beverage info into two lines (volume + alcohol %)
+- Updated README with Quick Start section and current button names
+
 ---
 
 ## [0.12] - 2026-01-17
