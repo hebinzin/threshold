@@ -177,9 +177,6 @@ function waitPrompt(text, id1, id2)
           'Yes': 1,
           'No': 0,
           '..': -1
-        },
-        remove: () => {
-          drawUI();
         }
       }).then((v) => {
         if (v > 0) {
@@ -216,7 +213,7 @@ function bevMenu()
       value: beverage.volume,
       min: 10,
       max: 1000,
-      setp: 1,
+      step: 1,
       onchange: v => save(beverage, 'volume', v, 'threshold.json')
     },
     'Alcohol (%)': {
