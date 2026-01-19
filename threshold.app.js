@@ -12,17 +12,21 @@ const DIVIDER_END = 0.45;
 const ZONE_BOT_START = 0.45;   // Bottom zone: 45% to 100% (counter + BAC, colored)
 
 function getBACStatus(bac, counter) {
-  // Returns color and message based on BAC level and session state
-  // No session started - neutral/white
-  if (counter === 0) return { color: null, msg: 'Count up a drink?' };
+  // Returns color, text color, and message based on BAC level and session state
+  // txt: text color for contrast on colored background
+  // div: divider color (opposite of background)
+  
+  // No session started - no coloring
+  if (counter === 0) return { color: null, txt: "#fff", div: "#fff", msg: 'Count up a drink?' };
   
   // Active session with thresholds
-  if (bac >= 0.16) return { color: "#f00", msg: "You shouldn't go on. Count another?" };
-  if (bac >= 0.08) return { color: "#f80", msg: "Be careful! Count another glass?" };
-  if (bac >= 0.04) return { color: "#ff0", msg: "Count one more drink?" };
+  // Red needs white text; green/yellow/orange use black
+  if (bac >= 0.16) return { color: "#f00", txt: "#fff", div: "#fff", msg: "You shouldn't go on. Count another?" };
+  if (bac >= 0.08) return { color: "#f80", txt: "#000", div: "#000", msg: "Be careful! Count another glass?" };
+  if (bac >= 0.04) return { color: "#ff0", txt: "#000", div: "#000", msg: "Count one more drink?" };
   
   // Low BAC but session active
-  return { color: "#0f0", msg: "Count up a drink?" };
+  return { color: "#0f0", txt: "#000", div: "#000", msg: "Count up a drink?" };
 }
 
 function save(object, key, value, file)
@@ -67,25 +71,41 @@ function drawUI()
   // Get BAC status (color + message)
   let status = getBACStatus(bac, data.counter);
 
-  // Bottom zone coloring and divider will be added in later steps
-  // For now, just draw sober time in top zone (will be repositioned in step 8)
+  // Draw colored bottom zone (only if session active)
+  if (status.color) {
+    g.setColor(status.color);
+    g.fillRect(0, Y * ZONE_BOT_START, X, Y);
+  }
+
+  // Draw horizontal divider between zones
+  g.setColor(status.div);
+  g.fillRect(0, Y * DIVIDER_START, X, Y * DIVIDER_END);
+
+  // Draw sober time in top zone
   drawEnd(inferEnd(bac, data.bio));
 
   waitPrompt(status.msg);
 
+  // Set text color for bottom zone (contrast with background)
+  if (status.color) {
+    g.setColor(status.txt);
+  } else {
+    g.setColor("#fff");
+  }
+
   // Draw counter on left side of bottom zone
   g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(data.counter, X * 0.25, Y * 0.60);
+  g.drawString(data.counter, X * 0.25, Y * 0.62);
 
   // Draw beverage info below counter
   g.setFont("6x8", 1);
-  g.drawString(data.volume + "ml", X * 0.25, Y * 0.78);
+  g.drawString(data.volume + "ml", X * 0.25, Y * 0.80);
 
   // Draw BAC on right side of bottom zone
   g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(bac.toFixed(2).substring(1), X * 0.75, Y * 0.58);
+  g.drawString(bac.toFixed(2).substring(1), X * 0.75, Y * 0.60);
   g.setFont("6x8", 2);
-  g.drawString('%', X * 0.75, Y * 0.75);
+  g.drawString('%', X * 0.75, Y * 0.78);
 
   // Swipe-up hint (will be replaced with triangle in step 11)
   g.setFontAlign(0, 1).setFont("6x8", 1);
