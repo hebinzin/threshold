@@ -4,11 +4,13 @@ This document tracks planned work for Threshold. Tasks are organized by version 
 
 ---
 
-## v0.13 — Error Recovery & Feedback
+## v0.13 — Core Experience & Feedback
 
-Focus: Let users fix mistakes and receive better feedback.
+Focus: Essential experience improvements and user feedback.
 
 - [x] **Add "More" submenu** — Replace "Set" button with "More" menu containing: Undo last drink, Beverage settings, Reset counter.
+- [x] **UI overhaul** — 2-zone layout, horizontal divider, bottom zone coloring, solid triangle hint.
+- [ ] **Dynamic BAC decrease** — BAC should visually decrease over time as alcohol metabolizes.
 - [ ] **Haptic feedback at thresholds** — Vibrate when BAC crosses warning levels (0.04, 0.08, 0.16).
 
 ---
@@ -26,8 +28,6 @@ Focus: Make common actions faster.
 
 Focus: Polish and submit to official Bangle.js App Loader.
 
-- [ ] **Dynamic BAC decrease** — BAC should visually decrease over time as alcohol metabolizes.
-- [ ] **Store BAC in threshold.json** — Avoid recalculating on every draw; enable persistence.
 - [ ] **Add screenshots** — Create screenshots for App Loader listing.
 - [ ] **Submit to official App Loader** — Create PR to espruino/BangleApps repository.
 
@@ -53,7 +53,7 @@ These are nice-to-have features for consideration after v1.0.
 |---------|--------|-------|
 | 0.10 | Released | Initial version on developer's fork |
 | 0.11 | Released | Critical fixes & first-run setup |
-| 0.12 | Released | Bug fixes, stability & discoverability |
-| 0.13 | Next | Error recovery & feedback |
+| 0.12 | In Progress | Bug fixes, stability, discoverability & UI overhaul |
+| 0.13 | Next | Core experience & feedback |
 | 0.14 | Planned | Streamlined flow |
 | 1.0 | Planned | Official release |

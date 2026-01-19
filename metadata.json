@@ -2,7 +2,7 @@
   "id": "threshold",
   "name": "Threshold",
   "shortName": "BAC",
-  "version": "0.12.6",
+  "version": "0.12.7",
   "description": "Track alcohol consumption and estimate Blood Alcohol Content (BAC). Count drinks, configure beverage volume and alcohol percentage, and see when you'll be sober again.",
   "icon": "app.png",
   "type": "app",

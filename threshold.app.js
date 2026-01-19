@@ -6,27 +6,24 @@ const Y = g.getHeight();
 let clockInterval, counterInterval;
 
 // UI Zone boundaries (Y coordinates as percentages)
-const ZONE_TOP_END = 0.40;     // Top zone: 0 to 40% (clock + sober time)
-const DIVIDER_START = 0.40;    // Divider: 40% to 45%
-const DIVIDER_END = 0.45;
-const ZONE_BOT_START = 0.45;   // Bottom zone: 45% to 100% (counter + BAC, colored)
+const DIVIDER_START = 0.45;    // Top zone ends here, divider starts
+const DIVIDER_END = 0.50;      // Divider ends, bottom zone starts (colored)
 
 function getBACStatus(bac, counter) {
   // Returns color, text color, and message based on BAC level and session state
   // txt: text color for contrast on colored background
-  // div: divider color (opposite of background)
   
   // No session started - no coloring
-  if (counter === 0) return { color: null, txt: "#fff", div: "#fff", msg: 'Count up a drink?' };
+  if (counter === 0) return { color: null, txt: "#fff", msg: 'Count up a drink?' };
   
   // Active session with thresholds
   // Red needs white text; green/yellow/orange use black
-  if (bac >= 0.16) return { color: "#f00", txt: "#fff", div: "#fff", msg: "You shouldn't go on. Count another?" };
-  if (bac >= 0.08) return { color: "#f80", txt: "#000", div: "#000", msg: "Be careful! Count another glass?" };
-  if (bac >= 0.04) return { color: "#ff0", txt: "#000", div: "#000", msg: "Count one more drink?" };
+  if (bac >= 0.16) return { color: "#f00", txt: "#fff", msg: "You shouldn't go on. Count another?" };
+  if (bac >= 0.08) return { color: "#f80", txt: "#000", msg: "Be careful! Count another glass?" };
+  if (bac >= 0.04) return { color: "#ff0", txt: "#000", msg: "Count one more drink?" };
   
   // Low BAC but session active
-  return { color: "#0f0", txt: "#000", div: "#000", msg: "Count up a drink?" };
+  return { color: "#0f0", txt: "#000", msg: "Count up a drink?" };
 }
 
 function save(object, key, value, file)
@@ -45,10 +42,6 @@ function drawUI()
   if (clockInterval) clearInterval(clockInterval);
   if (counterInterval) clearInterval(counterInterval);
 
-  // Display clock first, then set its refresh rate
-  drawClock();
-  clockInterval = setInterval(drawClock, 60000);
-
   // Read data from json file
   let data = Object.assign({
     bio: 1,
@@ -58,6 +51,13 @@ function drawUI()
     volume: 150,
     ratio: 4.5,
   }, S.readJSON('threshold.json', true) || {});
+
+  // Check if session is active (drinks counted)
+  let hasSession = data.counter > 0;
+
+  // Display clock (size depends on session state)
+  drawClock(hasSession);
+  clockInterval = setInterval(() => drawClock(hasSession), 60000);
 
   // Set a regular check for the counter timeout
   counterInterval = setInterval(clearCounter, 60000);
@@ -74,15 +74,15 @@ function drawUI()
   // Draw colored bottom zone (only if session active)
   if (status.color) {
     g.setColor(status.color);
-    g.fillRect(0, Y * ZONE_BOT_START, X, Y);
+    g.fillRect(0, Y * DIVIDER_END, X, Y);
   }
 
-  // Draw horizontal divider between zones
-  g.setColor(status.div);
+  // Draw horizontal divider between zones (always white in dark mode)
+  g.setColor("#fff");
   g.fillRect(0, Y * DIVIDER_START, X, Y * DIVIDER_END);
 
-  // Draw sober time in top zone
-  drawEnd(inferEnd(bac, data.bio));
+  // Draw sober time in top zone (colored to match bottom zone)
+  drawEnd(inferEnd(bac, data.bio), status.color);
 
   waitPrompt(status.msg);
 
@@ -93,24 +93,29 @@ function drawUI()
     g.setColor("#fff");
   }
 
+  // Calculate positions relative to bottom zone
+  let zoneH = 1 - DIVIDER_END;  // Bottom zone height (0.50)
+  let mainY = DIVIDER_END + zoneH * 0.36;   // Main items (counter, BAC)
+  let subY = DIVIDER_END + zoneH * 0.72;    // Secondary items (ml, %)
+
   // Draw counter on left side of bottom zone
   g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(data.counter, X * 0.25, Y * 0.62);
+  g.drawString(data.counter, X * 0.25, Y * mainY);
 
   // Draw beverage info below counter
   g.setFont("6x8", 1);
-  g.drawString(data.volume + "ml", X * 0.25, Y * 0.80);
+  g.drawString(data.volume + "ml", X * 0.25, Y * subY);
 
   // Draw BAC on right side of bottom zone
   g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(bac.toFixed(2).substring(1), X * 0.75, Y * 0.60);
+  g.drawString(bac.toFixed(2).substring(1), X * 0.75, Y * mainY);
   g.setFont("6x8", 2);
-  g.drawString('%', X * 0.75, Y * 0.78);
+  g.drawString('%', X * 0.75, Y * subY);
 
   // Swipe-up hint: solid triangle at bottom center
   g.setColor(status.txt || "#888");
   let cx = X * 0.5;        // Center X
-  let by = Y;              // Bottom Y
+  let by = Y - 2;          // Bottom Y (2px from edge)
   let tw = 10;             // Triangle width
   let th = 6;              // Triangle height
   g.fillPoly([cx, by - th, cx - tw/2, by, cx + tw/2, by]);
@@ -119,13 +124,26 @@ function drawUI()
   // Widgets removed for more screen space
 }
 
-function drawClock()
-// Draw current time in top zone (upper portion)
+function drawClock(hasSession)
+// Draw current time in top zone
+// hasSession: if true, smaller clock in upper portion; if false, larger centered clock
 {
   g.reset();
+  // Clear top zone before redrawing (prevent accumulation)
+  g.setColor(0);  // Black background
+  g.fillRect(0, 0, X, Y * DIVIDER_START);
+  g.setColor("#fff");
   let time = require('locale').time(new Date(), 1);
-  g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(time, X * 0.5, Y * 0.12);  // Upper third of top zone
+  
+  if (hasSession) {
+    // Session active: smaller clock in upper portion, leave room for sober time
+    g.setFontAlign(0, 0).setFont("6x8", 3);
+    g.drawString(time, X * 0.5, Y * 0.14);
+  } else {
+    // No session: larger clock centered in top zone
+    g.setFontAlign(0, 0).setFont("6x8", 4);
+    g.drawString(time, X * 0.5, Y * (DIVIDER_START / 2));
+  }
 }
 
 function clearCounter()
@@ -180,13 +198,18 @@ function inferEnd(bac, isMale)
   return endTime;
 }
 
-function drawEnd(timestamp)
+function drawEnd(timestamp, zoneColor)
 // Display the approximate sober time in top zone (lower portion)
+// zoneColor: color to match the bottom zone (visual connection)
 {
   g.reset();
   if (timestamp > Date.now()) {
+    // Use zone color if available, otherwise white
+    g.setColor(zoneColor || "#fff");
+    
     let soberTime = require('locale').time(new Date(timestamp), 1);
-    let yPos = Y * 0.30;  // Lower portion of top zone
+    // Position in lower portion of top zone (relative to divider)
+    let yPos = Y * (DIVIDER_START * 0.75);  // 75% down the top zone
     
     // Draw small clock icon (circle + hands)
     let iconX = X * 0.35;
