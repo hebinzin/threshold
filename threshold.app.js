@@ -107,10 +107,13 @@ function drawUI()
   g.setFont("6x8", 2);
   g.drawString('%', X * 0.75, Y * 0.78);
 
-  // Swipe-up hint (will be replaced with triangle in step 11)
-  g.setFontAlign(0, 1).setFont("6x8", 1);
-  g.setColor("#888");
-  g.drawString("^", X * 0.5, Y - 2);
+  // Swipe-up hint: solid triangle at bottom center
+  g.setColor(status.txt || "#888");
+  let cx = X * 0.5;        // Center X
+  let by = Y;              // Bottom Y
+  let tw = 10;             // Triangle width
+  let th = 6;              // Triangle height
+  g.fillPoly([cx, by - th, cx - tw/2, by, cx + tw/2, by]);
   g.reset();
 
   // Widgets removed for more screen space
