@@ -6,10 +6,10 @@ const Y = g.getHeight();
 let clockInterval, counterInterval;
 
 // UI Zone boundaries (Y coordinates as percentages)
-const ZONE_TOP_END = 0.18;      // Time strip: 0 to 18%
-const ZONE_MID_START = 0.18;   // Middle zone: 18% to 82%
-const ZONE_MID_END = 0.82;
-const ZONE_BOT_START = 0.82;   // Bottom strip: 82% to 100%
+const ZONE_TOP_END = 0.40;     // Top zone: 0 to 40% (clock + sober time)
+const DIVIDER_START = 0.40;    // Divider: 40% to 45%
+const DIVIDER_END = 0.45;
+const ZONE_BOT_START = 0.45;   // Bottom zone: 45% to 100% (counter + BAC, colored)
 
 function getBACStatus(bac, counter) {
   // Returns color and message based on BAC level and session state
@@ -67,51 +67,42 @@ function drawUI()
   // Get BAC status (color + message)
   let status = getBACStatus(bac, data.counter);
 
-  // Draw colored background for middle zone (only if session active)
-  if (status.color) {
-    g.setColor(status.color);
-    g.fillRect(0, Y * ZONE_MID_START, X, Y * ZONE_MID_END);
-    g.setColor("#000"); // Black text on colored background
-  }
-
-  // Partial vertical divider (center, not full height so color connects)
-  let dividerTop = Y * (ZONE_MID_START + 0.08);
-  let dividerBot = Y * (ZONE_MID_END - 0.08);
-  g.drawLine(X * 0.5, dividerTop, X * 0.5, dividerBot);
-
+  // Bottom zone coloring and divider will be added in later steps
+  // For now, just draw sober time in top zone (will be repositioned in step 8)
   drawEnd(inferEnd(bac, data.bio));
 
   waitPrompt(status.msg);
 
-  // Draw counter on left side of middle zone
+  // Draw counter on left side of bottom zone
   g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(data.counter, X * 0.28, Y * 0.50, true);
-
-  // Draw BAC on right side of middle zone
-  g.drawString(bac.toFixed(2).substring(1), X * 0.72, Y * 0.45, true);
-  g.drawString('%', X * 0.72, Y * 0.60, true);
+  g.drawString(data.counter, X * 0.25, Y * 0.60);
 
   // Draw beverage info below counter
   g.setFont("6x8", 1);
-  g.drawString(data.volume + "ml", X * 0.28, Y * 0.65, true);
-  g.drawString(data.ratio + "%", X * 0.28, Y * 0.73, true);
+  g.drawString(data.volume + "ml", X * 0.25, Y * 0.78);
 
-  // Swipe-up hint chevron at bottom right of bottom strip
-  g.setFontAlign(0, 0).setFont("6x8", 2);
+  // Draw BAC on right side of bottom zone
+  g.setFontAlign(0, 0).setFont("6x8", 3);
+  g.drawString(bac.toFixed(2).substring(1), X * 0.75, Y * 0.58);
+  g.setFont("6x8", 2);
+  g.drawString('%', X * 0.75, Y * 0.75);
+
+  // Swipe-up hint (will be replaced with triangle in step 11)
+  g.setFontAlign(0, 1).setFont("6x8", 1);
   g.setColor("#888");
-  g.drawString("^", X * 0.85, Y * (ZONE_BOT_START + 0.09));
+  g.drawString("^", X * 0.5, Y - 2);
   g.reset();
 
   // Widgets removed for more screen space
 }
 
 function drawClock()
-// Draw current time in top strip
+// Draw current time in top zone (upper portion)
 {
   g.reset();
   let time = require('locale').time(new Date(), 1);
   g.setFontAlign(0, 0).setFont("6x8", 3);
-  g.drawString(time, X * 0.5, Y * (ZONE_TOP_END / 2), true);
+  g.drawString(time, X * 0.5, Y * 0.12);  // Upper third of top zone
 }
 
 function clearCounter()
@@ -167,15 +158,15 @@ function inferEnd(bac, isMale)
 }
 
 function drawEnd(timestamp)
-// Display the approximate sober time in bottom strip with clock icon
+// Display the approximate sober time in top zone (lower portion)
 {
   g.reset();
   if (timestamp > Date.now()) {
     let soberTime = require('locale').time(new Date(timestamp), 1);
-    let yPos = Y * (ZONE_BOT_START + 0.07);
+    let yPos = Y * 0.30;  // Lower portion of top zone
     
     // Draw small clock icon (circle + hands)
-    let iconX = X * 0.25;
+    let iconX = X * 0.35;
     let iconR = 6;
     g.drawCircle(iconX, yPos, iconR);
     g.drawLine(iconX, yPos, iconX, yPos - 4);      // Hour hand (up)
@@ -183,7 +174,7 @@ function drawEnd(timestamp)
     
     // Draw sober time next to icon
     g.setFontAlign(0, 0).setFont("6x8", 2);
-    g.drawString(soberTime, X * 0.55, yPos, true);
+    g.drawString(soberTime, X * 0.60, yPos);
   }
 }
 
